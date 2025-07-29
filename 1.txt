@@ -1,136 +1,59 @@
--- Create DEPARTMENT Table
-CREATE TABLE DEPARTMENT (
-    Dno INTEGER NOT NULL PRIMARY KEY,
-    Dname VARCHAR(50),
-    Location VARCHAR(50) DEFAULT 'New Delhi'
-);
-
--- Create EMPLOYEE Table
-CREATE TABLE EMPLOYEE (
-    Eno CHAR(3) NOT NULL PRIMARY KEY,
-    Ename VARCHAR(50) NOT NULL,
-    Job_type VARCHAR(50) NOT NULL,
-    Manager CHAR(3),
-    Hire_date DATE NOT NULL,
-    Dno INTEGER,
-    Commission DECIMAL(10,2),
-    Salary DECIMAL(7,2) NOT NULL,
-    FOREIGN KEY (Dno) REFERENCES DEPARTMENT(Dno),
-    FOREIGN KEY (Manager) REFERENCES EMPLOYEE(Eno)
-);
-
--- Query 1
+-- 1. Display Employee Name, Job, Hire Date, Employee Number; for each employee with the Employee Number appearing first.
 SELECT Eno, Ename, Job_type, Hire_date FROM EMPLOYEE;
 
--- Query 2
+-- 2. Display unique Jobs from the Employee Table.
 SELECT DISTINCT Job_type FROM EMPLOYEE;
 
--- Query 3
+-- 3. Display the Employee Name concatenated by a Job separated by a comma.
 SELECT CONCAT(Ename, ', ', Job_type) AS Employee_Job FROM EMPLOYEE;
 
--- Query 4
+-- 4. Display all the data from the Employee Table. Separate each Column by a comma and name the said column as THE_OUTPUT.
 SELECT 
   CONCAT(Eno, ', ', Ename, ', ', Job_type, ', ', Manager, ', ', Hire_date, ', ', Dno, ', ', Commission, ', ', Salary) AS THE_OUTPUT 
 FROM EMPLOYEE;
 
--- Query 5
+-- 5. Display the Employee Name and Salary of all the employees earning more than $2850.
 SELECT Ename, Salary FROM EMPLOYEE WHERE Salary > 2850;
 
--- Query 6
+-- 6. Display Employee Name and Department Number for the Employee No = 7900.
 SELECT Ename, Dno FROM EMPLOYEE WHERE Eno = '7900';
 
--- Query 7
+-- 7. Display Employee Name and Salary for all employees whose salary is not in the range of $1500 and $2850.
 SELECT Ename, Salary FROM EMPLOYEE WHERE Salary NOT BETWEEN 1500 AND 2850;
 
--- Query 8
+-- 8. Display Employee Name and Department No. of all the employees in Dept 10 and Dept 30 in the alphabetical order by name.
 SELECT Ename, Dno FROM EMPLOYEE 
 WHERE Dno IN (10, 30) 
 ORDER BY Ename;
 
--- Query 9
+-- 9. Display Name and Hire Date of every Employee who was hired in 1981.
 SELECT Ename, Hire_date FROM EMPLOYEE 
 WHERE YEAR(Hire_date) = 1981;
 
--- Query 10
+-- 10. Display Name and Job of all employees who don’t have a current Manager.
 SELECT Ename, Job_type FROM EMPLOYEE 
 WHERE Manager IS NULL;
 
--- Query 11
+-- 11. Display the Name, Salary and Commission for all the employees who earn commission.
 SELECT Ename, Salary, Commission FROM EMPLOYEE 
 WHERE Commission IS NOT NULL;
 
--- Query 12
+-- 12. Sort the data in descending order of Salary and Commission.
 SELECT * FROM EMPLOYEE 
 ORDER BY Salary DESC, Commission DESC;
 
--- Query 13
+-- 13. Display Name of all the employees where the third letter of their name is ‘A’.
 SELECT Ename FROM EMPLOYEE 
 WHERE SUBSTRING(Ename, 3, 1) = 'A';
 
--- Query 14
+-- 14. Display Name of all employees either have two ‘R’s or have two ‘A’s in their name and are either in Dept No = 30 or their Managers Employee No = 7788.
 SELECT Ename FROM EMPLOYEE 
 WHERE (Ename LIKE '%R%R%' OR Ename LIKE '%A%A%') 
 AND (Dno = 30 OR Manager = '7788');
 
--- Query 15
+-- 15. Display Name, Salary and Commission for all employees whose Commission Amount is 14 greater than their Salary increased by 5%.
 SELECT Ename, Salary, Commission FROM EMPLOYEE 
 WHERE Commission = (Salary * 1.05) + 14;
 
--- Query 16
+-- 16. Display the Current Date.
 SELECT CURRENT_DATE;
-
--- Query 17
-SELECT Ename, Dname FROM EMPLOYEE 
-JOIN DEPARTMENT ON EMPLOYEE.Dno = DEPARTMENT.Dno 
-WHERE Ename LIKE '%A%';
-
--- Query 18
-SELECT Ename, TIMESTAMPDIFF(MONTH, Hire_date, CURDATE()) AS Months_Since_Hire FROM EMPLOYEE;
-
--- Query 19
-SELECT Ename, Salary, CONCAT(Ename, ' earns ', Salary, ' monthly but wants ', 3 * Salary) AS Dream_Salary FROM EMPLOYEE;
-
--- Query 20
-SELECT CONCAT(UCASE(LEFT(Ename, 1)), LCASE(SUBSTRING(Ename, 2))) AS Proper_Name, LENGTH(Ename) AS Name_Length 
-FROM EMPLOYEE 
-WHERE Ename LIKE 'J%' OR Ename LIKE 'A%' OR Ename LIKE 'M%';
-
--- Query 21
-SELECT Ename, Hire_date, DAYNAME(Hire_date) AS Start_Day FROM EMPLOYEE;
-
--- Query 22
-SELECT Ename, DEPARTMENT.Dname, EMPLOYEE.Dno 
-FROM EMPLOYEE 
-JOIN DEPARTMENT ON EMPLOYEE.Dno = DEPARTMENT.Dno;
-
--- Query 23
-SELECT DISTINCT Job_type 
-FROM EMPLOYEE 
-WHERE Dno = 30;
-
--- Query 24
-SELECT Ename, Dname 
-FROM EMPLOYEE 
-JOIN DEPARTMENT ON EMPLOYEE.Dno = DEPARTMENT.Dno 
-WHERE Ename LIKE '%A%';
-
--- Query 25
-SELECT Ename, Job_type, EMPLOYEE.Dno, Dname 
-FROM EMPLOYEE 
-JOIN DEPARTMENT ON EMPLOYEE.Dno = DEPARTMENT.Dno 
-WHERE Location = 'Dallas';
-
--- Query 26
-SELECT E1.Ename AS Employee_Name, E1.Eno AS Employee_No,
-       E2.Ename AS Manager_Name, E2.Eno AS Manager_No
-FROM EMPLOYEE E1
-LEFT JOIN EMPLOYEE E2 ON E1.Manager = E2.Eno;
-
--- Query 27
-SELECT Ename, Dno, Salary 
-FROM EMPLOYEE 
-WHERE (Dno, Salary) IN (
-    SELECT Dno, Salary 
-    FROM EMPLOYEE 
-    WHERE Commission IS NOT NULL
-);
